@@ -8,7 +8,7 @@ export default () => (
     style={{
       background: 'none',
     }}
-    subTitle="Sorry, the server is reporting an error."
+    subTitle="Sorry! the server is reporting an error."
     extra={
       <Link to="/">
         <Button type="primary">Back Home</Button>
