@@ -60,7 +60,7 @@ const ListContent = ({
   </div>
 );
 
-export const PAGE_NAME_UPPER_CAMEL_CASE: FC = () => {
+export const ListTable: FC = () => {
   const [done, setDone] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
   const [current, setCurrent] = useState<Partial<BasicListItemDataType> | undefined>(undefined);
@@ -243,4 +243,4 @@ export const PAGE_NAME_UPPER_CAMEL_CASE: FC = () => {
   );
 };
 
-export default PAGE_NAME_UPPER_CAMEL_CASE;
+export default ListTable;
