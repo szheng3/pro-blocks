@@ -1,11 +1,11 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import type { Request, Response } from 'express';
+import { Request, Response } from 'express';
+import moment from 'moment';
 import { parse } from 'url';
-import type { TableListItem, TableListParams } from './data.d';
 
 // mock tableListDataSource
 const genList = (current: number, pageSize: number) => {
-  const tableListDataSource: TableListItem[] = [];
+  const tableListDataSource: API.RuleListItem[] = [];
 
   for (let i = 0; i < pageSize; i += 1) {
     const index = (current - 1) * 10 + i;
@@ -21,9 +21,9 @@ const genList = (current: number, pageSize: number) => {
       owner: '曲丽丽',
       desc: '这是一段描述',
       callNo: Math.floor(Math.random() * 1000),
-      status: (Math.floor(Math.random() * 10) % 4).toString(),
-      updatedAt: new Date(),
-      createdAt: new Date(),
+      status: Math.floor(Math.random() * 10) % 4,
+      updatedAt: moment().format('YYYY-MM-DD'),
+      createdAt: moment().format('YYYY-MM-DD'),
       progress: Math.ceil(Math.random() * 100),
     });
   }
@@ -39,13 +39,17 @@ function getRule(req: Request, res: Response, u: string) {
     realUrl = req.url;
   }
   const { current = 1, pageSize = 10 } = req.query;
-  const params = parse(realUrl, true).query as unknown as TableListParams;
+  const params = parse(realUrl, true).query as unknown as API.PageParams &
+    API.RuleListItem & {
+      sorter: any;
+      filter: any;
+    };
 
   let dataSource = [...tableListDataSource].slice(
     ((current as number) - 1) * (pageSize as number),
     (current as number) * (pageSize as number),
   );
-  const sorter = JSON.parse(params.sorter as any);
+  const sorter = JSON.parse(params.sorter || ('{}' as any));
   if (sorter) {
     dataSource = dataSource.sort((prev, next) => {
       let sortNumber = 0;
@@ -68,7 +72,9 @@ function getRule(req: Request, res: Response, u: string) {
     });
   }
   if (params.filter) {
-    const filter = JSON.parse(params.filter as any) as Record<string, string[]>;
+    const filter = JSON.parse(params.filter as any) as {
+      [key: string]: string[];
+    };
     if (Object.keys(filter).length > 0) {
       dataSource = dataSource.filter((item) => {
         return Object.keys(filter).some((key) => {
@@ -85,20 +91,14 @@ function getRule(req: Request, res: Response, u: string) {
   }
 
   if (params.name) {
-    dataSource = dataSource.filter((data) => data.name.includes(params.name || ''));
+    dataSource = dataSource.filter((data) => data?.name?.includes(params.name || ''));
   }
-
-  let finalPageSize = 10;
-  if (params.pageSize) {
-    finalPageSize = parseInt(`${params.pageSize}`, 10);
-  }
-
   const result = {
     data: dataSource,
     total: tableListDataSource.length,
     success: true,
-    pageSize: finalPageSize,
-    current: parseInt(`${params.currentPage}`, 10) || 1,
+    pageSize,
+    current: parseInt(`${params.current}`, 10) || 1,
   };
 
   return res.json(result);
@@ -121,7 +121,7 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
     case 'post':
       (() => {
         const i = Math.ceil(Math.random() * 10000);
-        const newRule = {
+        const newRule: API.RuleListItem = {
           key: tableListDataSource.length,
           href: 'https://ant.design',
           avatar: [
@@ -132,9 +132,9 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
           owner: '曲丽丽',
           desc,
           callNo: Math.floor(Math.random() * 1000),
-          status: (Math.floor(Math.random() * 10) % 2).toString(),
-          updatedAt: new Date(),
-          createdAt: new Date(),
+          status: Math.floor(Math.random() * 10) % 2,
+          updatedAt: moment().format('YYYY-MM-DD'),
+          createdAt: moment().format('YYYY-MM-DD'),
           progress: Math.ceil(Math.random() * 100),
         };
         tableListDataSource.unshift(newRule);
