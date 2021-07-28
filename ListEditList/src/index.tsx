@@ -39,11 +39,11 @@ import moment from "moment";
 export default () => {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<permission.Datum[]>([]);
+  const ref = useRef<ActionType>();
+  const page = (ref?.current?.pageInfo?.current || 1) - 1;
   // const [selectedRows, setSelectedRows] = useState<any[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
   const [allSelectedRows, setAllSelectedRows] = useState<any[]>([]);
-  const ref = useRef<ActionType>();
-  const page = (ref?.current?.pageInfo?.current || 1) - 1;
   const cancelResetCreator = (
     _allSelectedRows: permission.Datum[][],
     index = 0,
