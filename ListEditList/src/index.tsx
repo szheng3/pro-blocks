@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import { EditableProTable } from '@ant-design/pro-table';
 import { deletePermission, getPermissions, savePermission } from './service';
-import type { permission } from '@/pages/admin/permissions/data';
+import type { permission } from './data';
 import { Modal, Space } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
