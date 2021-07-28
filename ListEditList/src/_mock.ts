@@ -64,7 +64,7 @@ function postRule(req: Request, res: Response) {
 }
 
 export default {
-  'GET /api/oauth2/permissions': getRule,
-  'POST /api/oauth2/permissions': postRule,
-  'DELETE /api/oauth2/permissions': postRule,
+  'GET /api/permissions': getRule,
+  'POST /api/permissions': postRule,
+  'DELETE /api/permissions': postRule,
 };
